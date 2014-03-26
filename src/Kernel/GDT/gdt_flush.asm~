@@ -1,0 +1,20 @@
+.intel_syntax noprefix 
+
+
+.extern thegdtptr
+
+.global gdt_flush
+.type gdt_flush, @function 
+gdt_flush: 
+	lgdt [esp + 4] # should load our GDT ptr! 
+	mov ax, 0x10
+	mov ds, ax 
+	mov es, ax
+	mov fs, ax
+	mov gs, ax  
+	mov ss, ax 
+	jmp 0x08:Section2 
+Section2: 
+
+	ret 
+
