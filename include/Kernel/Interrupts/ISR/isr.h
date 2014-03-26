@@ -40,10 +40,10 @@ void isr31(void);
 /* This defines what the stack looks like after an ISR was running */
 typedef struct __attribute__((packed))
 {
-    uint32_t gs, fs, es, ds;      /* pushed the segs last */
-    uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;  /* pushed by 'pusha' */
-    uint32_t int_no, err_code;    /* our 'push byte #' and ecodes do this */
-    uint32_t eip, cs, eflags, useresp, ss;   /* pushed by the processor automatically */ 
+    uint32_t gs, fs, es, ds;
+    uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
+    uint32_t int_no, err_code;    
+    uint32_t eip, cs, eflags, useresp, ss;  
 } fault_regs_t; 
 
 static uint8_t *msgs[] = { 
@@ -69,6 +69,6 @@ static uint8_t *msgs[] = {
 	"Reserved" 
 }; 
 
-void isr_fault_handler(fault_regs_t registers); 
+void isr_fault_handler(fault_regs_t registers); /* called by the exception ISRs; not expected to return however (as of now)! */
 void isrs_init(void); 
 #endif

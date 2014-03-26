@@ -34,12 +34,12 @@ stack_top:
 .type _start, @function 
 _start: 
 	.att_syntax prefix
-	movl $stack_top, %esp #For some reason, when I do the intel equivalent "mov esp, stack_top", it tries to assign to esp the VALUE of the address of stack_top, not the address itself (GAS has some problems!)
+	movl $stack_top, %esp 
 	.intel_syntax noprefix 
-	push ebx 
+	push ebx
 	call Alo_Main 
 	pop ebx 
-	call DivideByZero #This is me testing my processor exception handling code by making it divide by zero; delete it if you want! 
+	call DivideByZero 
 	cli #This should put the computer in an infinite loop. In multiprocessor systems this may be more complicated, but we are just going to assume there is just one processor for now 
 	hlt 
 	.InfiniteLoop: 

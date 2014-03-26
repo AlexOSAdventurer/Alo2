@@ -1,3 +1,7 @@
+#ifndef GDT 
+#define GDT 
+
+
 #include <stdint-gcc.h> 
 #include <stddef.h> 
 
@@ -21,4 +25,6 @@ gdt_ptr_t thegdtptr;
 
 void assign_gdt(gdt_ptr_t agdtptr); /* Only needed when you install a new gdt; after that, any changes to the GDT will be registered */ 
 void gdt_set_gate(gdt_entry_t *gdtentry, uint32_t base, uint32_t limit, uint8_t access, uint8_t granularity); 
-void gdt_init(void); /* sets up a basic GDT */
+void gdt_init(void); /* sets up a basic GDT */ 
+
+#endif 

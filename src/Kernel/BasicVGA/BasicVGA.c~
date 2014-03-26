@@ -2,7 +2,7 @@
 
 /* We could make it so there are more bits for both the background and foreground colors. However, that would require a general VGA driver to do, and I am not that knowledgeable yet :( */
 
-uint8_t VGA_makecolor(VGA_color_val foreground, VGA_color_val background) { 
+uint8_t make_color(VGA_color_val foreground, VGA_color_val background) { 
 	return foreground | (background << 4); /* The background bits take up the four most significant bits, with the foreground taking the four least signficant ones. */
 }; 
 
@@ -24,7 +24,7 @@ size_t strlen(uint8_t* str) {
 void VGA_init() { 
 	VGA_row = 0; 
 	VGA_column = 0; 
-	VGA_color = VGA_makecolor(COLOR_GREEN, COLOR_BLACK); 
+	VGA_color = make_color(COLOR_GREEN, COLOR_BLACK); 
 	VGA_buffer = (uint16_t*)0xB8000; /* The address of the VGA buffer */
 	for (size_t y = 0;y < VGA_HEIGHT; y++) { 
 		for (size_t x = 0; x < VGA_WIDTH; x++) { 
