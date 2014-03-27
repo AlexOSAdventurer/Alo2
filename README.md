@@ -26,7 +26,7 @@ Only supports 386+ processors! (However, basically every modern PC falls under t
 
 Usage 
 ---- 
-As it is, you should change to the main directory of the repository and simply do a "make all", in which you will find an Alo.iso file in the build directory, ready to boot! 
+As it is, you should change to the main directory of the repository and simply do a "make all", in which you will find an Alo2.iso file in the build directory, ready to boot! 
 
 Dependencies 
 ---- 
