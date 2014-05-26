@@ -12,7 +12,7 @@ The OS
 
 Status
 ---- 
-As it stands, I haven't gotten very far; I can't even read from the keyboard properly yet (through hardware interrupts). That should change very soon though. I DO have the GDT and IDT set up, and can catch processor exceptions. 
+I only have video output (80 * 25) set up. 
 Only supports 386+ processors! (However, basically every modern PC falls under that)
 
 Usage 
