@@ -3,7 +3,7 @@ Alo2
 
 Background 
 ---- 
-GOAL:  Get as far as I can!!!!!!!!!!!!!!!!!!1 
+GOAL:  Get as far as I can!!!!!!!!!!!!!!!!!!!!  
 
 The OS 
 ----
