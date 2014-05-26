@@ -3,16 +3,7 @@ Alo2
 
 Background 
 ---- 
-If you don't want to listen to a whole bunch of gab largely unrelated to the OS, skip to the next section! 
-
-
-A couple of years back, I got interested in low-level parts of computer systems. 
-I had originally worked on user-level applications, but I found that they were about a tenth as gratifying as working on a bare bones computer. 
-
-Don't ask why. 
-
-Around the summer, of 2013, I decided to write an OS. Not a complex one; I just wanted to see how far I could go. However, due partly to the fact that I knew little about low-level debugging (gdb, had I known you, you would have been my best friend), and that school was starting back up, I ditched the project. It know exists as the Alo repository of mine; if anyone can make something out of it, more power to them. Now, with school winding down in a couple of months, and the fact that I had five days of vacation and nothing to do in the mean-time, I decided to take another stab at it! 
-
+GOAL:  Get as far as I can!!!!!!!!!!!!!!!!!!1 
 
 The OS 
 ----
