@@ -25,12 +25,7 @@ Dependencies
 ---- 
 You will need GCC and binutils; they will need to target i386-elf. You will have to tweak the makefile so it uses the compiler and assembler you want it to use; sorry if that is a little bit of a pain! In addition, you will have to make sure you got the GRUB2 utility programs installed, as the makefile uses grub-mkrescue to make an iso image! 
 
-Caveats 
+Caveat  
 ---- 
 * Only tested with qemu! 
-
-* You need to manually delete all object files after a build to ensure that the next build will be completely fresh (sorry; I am just not good with makefiles yet!)  
-
-* When you add to it, when you add an include directive, you will have to use the "../" a few times to get out into the main directory, and THEN go to the include directory! 
-
 
