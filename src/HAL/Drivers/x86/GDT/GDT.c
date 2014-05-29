@@ -12,10 +12,6 @@ void SetGDTEntry(int entrynumber, uint32_t base, uint32_t limit, uint8_t access,
 	
 }; 
 
-void LoadThe_GDT(uint32_t codeoffset, uint32_t dataoffset) { 
-	load_gdt(gdtpointer, dataoffset, codeoffset); 
-};  
-
 void GDT_init(void) { 
 	gdtpointer.size = 23; 
 	gdtpointer.address = &thegdt; 
@@ -24,6 +20,6 @@ void GDT_init(void) {
 	
 	SetGDTEntry(2, 0, 0xFFFFFFFF, 0x92, 0xCF);  
 	
-	LoadThe_GDT(0x08, 0x10); 
+	load_gdt(gdtpointer, 0x10, 0x08);  
 }; 
 
