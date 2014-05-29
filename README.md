@@ -27,5 +27,5 @@ You will need GCC and binutils; they will need to target i386-elf. You will have
 
 Caveat  
 ---- 
-* Only tested with qemu! 
+* Only tested with qemu and bochs! 
 
