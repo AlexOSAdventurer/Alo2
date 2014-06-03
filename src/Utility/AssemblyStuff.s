@@ -11,6 +11,7 @@ outportb:
 .type inportb, @function 
 
 inportb: 
+	xor %eax, %eax 
 	movw 4(%esp), %dx     
 	inb %dx, %al      
 	ret 

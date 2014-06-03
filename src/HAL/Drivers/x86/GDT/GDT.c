@@ -1,5 +1,9 @@
 #include <HAL/Drivers/x86/GDT/GDT.h> 
 
+static gdt_entry thegdt[3]; 
+
+static gdt_pointer gdtpointer; 
+
 void SetGDTEntry(int entrynumber, uint32_t base, uint32_t limit, uint8_t access, uint8_t granularity) { 
 	thegdt[entrynumber].access = access; 
 	

@@ -17,10 +17,6 @@ typedef struct __attribute__((packed)) {
 } gdt_pointer; 
 
 
-static gdt_entry thegdt[3]; 
-
-static gdt_pointer gdtpointer; 
-
 void load_gdt(gdt_pointer ptr, uint32_t dataoffset, uint32_t codeoffset); 
 
 void SetGDTEntry(int entrynumber, uint32_t base, uint32_t limit, uint8_t access, uint8_t granularity); 

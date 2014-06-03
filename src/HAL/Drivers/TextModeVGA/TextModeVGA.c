@@ -1,5 +1,10 @@
 #include <HAL/Drivers/TextModeVGA/TextModeVGA.h> 
 
+static uint16_t* TextModeVGA_Buffer = 0xB8000; 
+static const size_t TextModeVGA_Width = 80; 
+static const size_t TextModeVGA_Height = 25; 
+
+
 static uint8_t generate_color(VGA_color foreground, VGA_color background) { 
 	return foreground | (background << 4) ; 
 }; 

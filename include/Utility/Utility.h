@@ -1,11 +1,11 @@
 #pragma once 
 
-#include <HAL/Interactors/Terminal/Terminal.h> 
+#include <HAL/Interactors/Terminal/Terminal.h>
 #include <stdint-gcc.h> 
 
-#define ASSERT_FORMATSTR "Assertion failed! \n File: %s. \n Line: %s. " 
+#define ASSERT_FORMATSTR "Assertion failed! \n File: %s. \n Line: %d. " 
 
-#define ASSERT(condition) do { if (!(condition)) { printf(ASSERT_FORMATSTR, RED, BLACK, __FILE__, _(__LINE__)); panic("Fatal error! "); }; }  
+#define ASSERT(condition) do { if (!(condition)) { terminal_printf(ASSERT_FORMATSTR, __FILE__, __LINE__); panic("Fatal error! "); }; } while(0)  
 
 #define UNUSED(var) (void)(var) 
 
@@ -18,4 +18,5 @@ uint8_t inportb(uint16_t port);
 void io_wait(void); 
 
 
+void itoa(int num, char *thespace, int base); 
 
