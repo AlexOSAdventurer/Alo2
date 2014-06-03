@@ -23,7 +23,7 @@ To clean out all object files, just do a make clean.
 
 Dependencies 
 ---- 
-You will need GCC and binutils; they will need to target i386-elf. You will have to tweak the makefile so it uses the compiler and assembler you want it to use; sorry if that is a little bit of a pain! In addition, you will have to make sure you got the GRUB2 utility programs installed, as the makefile uses grub-mkrescue to make an iso image! 
+You will need a GCC cross compiler that targets i386-elf and add its bin directory to the PATH variable (you need to be using Cygwin or a *NIX like OS).  Otherwise, my makefile is most likely useless to you; sorry if that is a little bit of a pain! In addition, you will have to make sure you got the GRUB2 utility programs installed, as the makefile uses grub-mkrescue to make an iso image! 
 
 Caveat  
 ---- 
