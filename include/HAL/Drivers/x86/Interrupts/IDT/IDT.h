@@ -79,15 +79,15 @@ IDT_entry IDT[256];
 
 IDT_pointer theidtpointer; 
 
-typedef void (*interrupthandlerfunc)(interrupt_stackstate); 
+typedef void (*interrupthandlerfunc)(interrupt_stackstate*); 
 
 interrupthandlerfunc InterruptHandlers[256]; 
 
-void Interrupt_Exception_Handler(interrupt_stackstate stack); 
+void Interrupt_Exception_Handler(interrupt_stackstate *stack); 
 
 void SetIDTEntry(int interruptnum,  uint32_t base, uint16_t theselector, uint8_t flags); 
 
-void Interrupt_Handler(interrupt_stackstate thestack); 
+void Interrupt_Handler(interrupt_stackstate *thestack); 
 
 void  load_idt(IDT_pointer ourpointer); 
 

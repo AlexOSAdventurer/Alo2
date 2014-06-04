@@ -8,8 +8,8 @@ static void Interrupt_DumpExceptionStack(interrupt_stackstate thestack) {
 	terminal_printf("EIP: %d. CS: %d. EFLAGS: %d. User's esp: %d. SS: %d.", thestack.eip, thestack.cs, thestack.eflags, thestack.useresp, thestack.ss); 
 }; 
 
-void Interrupt_Exception_Handler(interrupt_stackstate stack) { 
-	Interrupt_DumpExceptionStack(stack); 
+void Interrupt_Exception_Handler(interrupt_stackstate *stack) { 
+	Interrupt_DumpExceptionStack(*stack); 
 	panic("Fatal exception!"); 
 }; 
 
@@ -22,26 +22,26 @@ void SetIDTEntry(int interruptnum,  uint32_t base, uint16_t theselector, uint8_t
 }; 
 
 
-static void IRQ_Handler(interrupt_stackstate astack) { 
-	if ((PIC_get_isr() >> (astack.interrupt_number)) & 0x01) { 
-		if (InterruptHandlers[astack.interrupt_number]) { 
-			InterruptHandlers[astack.interrupt_number](astack); 
+static void IRQ_Handler(interrupt_stackstate *astack) { 
+	if ((PIC_get_isr() >> (astack->interrupt_number)) & 0x01) { 
+		if (InterruptHandlers[astack->interrupt_number]) { 
+			InterruptHandlers[astack->interrupt_number](astack); 
 		}; 
-		PIC_SendEOI(astack.interrupt_number - 32); 
+		PIC_SendEOI(astack->interrupt_number - 32); 
 	}
 	else { 
-		if ((astack.interrupt_number) > 39) { 
+		if ((astack->interrupt_number) > 39) { 
 			PIC_SendEOI(0);  
 		}; 
 	}; 
 }; 
 
-void Interrupt_Handler(interrupt_stackstate thestack) {  
-	if (thestack.interrupt_number > 31) { 
+void Interrupt_Handler(interrupt_stackstate *thestack) {  
+	if (thestack->interrupt_number > 31) { 
 		IRQ_Handler(thestack); 
 		return; 
 	}; 
-	InterruptHandlers[thestack.interrupt_number](thestack); 
+	InterruptHandlers[thestack->interrupt_number](thestack); 
 }; 
 
 void IDT_init(void) { 

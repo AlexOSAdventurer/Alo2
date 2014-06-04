@@ -11,7 +11,5 @@ _KernelEntry:
 		push %ebx 
 		call Alo_Main 
 		pop %ebx 
-		mov $0, %eax 
-		idiv %eax 
 		.InfiniteJumpLoop: 
 			jmp .InfiniteJumpLoop 

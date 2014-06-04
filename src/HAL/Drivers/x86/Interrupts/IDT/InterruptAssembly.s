@@ -89,7 +89,9 @@ MainInterruptPiece:
 	mov %ax, %es 
 	mov %ax, %fs 
 	mov %ax, %gs 
+	push %esp 
 	call Interrupt_Handler 
+	pop %eax 
 	pop %gs 
 	pop %fs 
 	pop %es 
