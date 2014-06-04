@@ -12,7 +12,7 @@ The OS
 
 Status
 ---- 
-I only have video output (80 * 25) set up. 
+I have video output set up, along with interrupts and the PIT (which is set at 100 hz). 
 Only supports 386+ processors! (However, basically every modern PC falls under that)
 
 Usage 
