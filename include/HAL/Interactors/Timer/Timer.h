@@ -7,11 +7,11 @@ static struct Timer_struct {
 	TimerCallback func; 
 	int tick; 
 	int limit; 
-	struct Timer_struct* next; 
-	struct Timer_struct* behind; 
+	volatile struct Timer_struct* next; 
+	volatile struct Timer_struct* behind; 
 }; 
 
-typedef struct Timer_struct Timer; 
+typedef volatile struct Timer_struct Timer; 
 
 void Timer_Register_Timer(Timer* thetimer); 
 

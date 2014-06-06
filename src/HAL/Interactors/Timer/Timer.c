@@ -1,6 +1,6 @@
 #include <HAL/Interactors/Timer/Timer.h> 
 
-static volatile Timer* LeadingTimer = 0; 
+static Timer* LeadingTimer = 0; 
 
 static volatile bool InOperation = false; 
 
