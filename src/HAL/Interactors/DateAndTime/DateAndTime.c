@@ -38,7 +38,7 @@ int GetDayInMonth(void) {
 }; 
 
 int GetYear(void) { 
-	return (int)(((uint16_t)CMOS_GetRegister(9) << 8) | ((uint16_t)CMOS_GetRegister(10))); 
+	return (int)(CMOS_GetRegister(9)); 
 }; 
 
 
