@@ -20,6 +20,7 @@ static void UpdateTimers(interrupt_stackstate *nstack) {
 
 void Timer_Register_Timer(Timer* thetimer) { 
 	InOperation = true; 
+	thetimer->tick = 0; 
 	Timer* formerleading = LeadingTimer; 
 	LeadingTimer = thetimer; 
 	thetimer->behind = formerleading; 

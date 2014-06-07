@@ -1,6 +1,6 @@
 #include <HAL/Drivers/x86/PIT/PIT.h> 
 
-static int timerstate = 0; 
+static uint64_t timerstate = 0; 
 
  void PIT_Handler(interrupt_stackstate *thestack) { 
 	if (ThePITCallback) { 

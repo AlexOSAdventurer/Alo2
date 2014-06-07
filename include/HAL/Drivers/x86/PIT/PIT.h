@@ -3,6 +3,7 @@
 #include <HAL/Drivers/x86/Interrupts/Interrupts.h> 
 #include <Utility/Utility.h> 
 #include <HAL/Interactors/Terminal/Terminal.h> 
+#include <stdint-gcc.h> 
 
 typedef interrupthandlerfunc PITCallback; 
 
