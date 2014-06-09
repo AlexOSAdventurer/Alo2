@@ -27,5 +27,4 @@ You will need a GCC cross compiler that targets i386-elf and add its bin directo
 
 Caveat  
 ---- 
-* Only tested with qemu and bochs! 
-
+* Tested mostly only on bochs. 
