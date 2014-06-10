@@ -28,3 +28,7 @@ You will need a GCC cross compiler that targets i386-elf and add its bin directo
 Caveat  
 ---- 
 * Tested mostly only on bochs. 
+
+LICENSING 
+---- 
+Every file that doesn't have a license specified in it defaults to the one in LICENSE.md. 
