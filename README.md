@@ -31,4 +31,4 @@ Caveat
 
 LICENSING 
 ---- 
-Every file that doesn't have a license specified in it defaults to the one in LICENSE.md. 
+Every file that doesn't have a license specified in it defaults to the one in LICENSE.md. Otherwise, treat it according to the license stated in the file. Right now, that is no issue though; everything in this repo is under one license. However, I may include code from other projects at some point, so stay sharp! 
