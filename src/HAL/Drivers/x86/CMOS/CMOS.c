@@ -32,3 +32,12 @@ uint8_t CMOS_GetRegister(int reg) {
 }; 
 
 
+void CMOS_WriteToRegister(int thereg, uint8_t val) 
+	interrupts_disable(); 
+	outportb(0x70, (NMI_Status << 7) | thereg); 
+	io_wait(); 
+	outportb(0x71, val); 
+	io_wait(); 
+	interrupts_enable(); 
+}; 
+
