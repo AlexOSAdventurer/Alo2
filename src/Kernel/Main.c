@@ -13,7 +13,7 @@ void OneSecondHandler(interrupt_stackstate *lstack) {
 	terminal_printf("About one second has passed."); 
 }; 
 
-void Alo_Main(multiboot_info_t *multibootdata) { 
+void Alo_Main(multiboot_data *multibootdata) { 
 	HAL_init(multibootdata);  
 	terminal_putstring("Hello to Alo 2!\n"); 
 	terminal_putstring(" Just testing newlines....\n"); 

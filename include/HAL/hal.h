@@ -9,5 +9,5 @@
 #include <HAL/Interactors/DateAndTime/DateAndTime.h> 
 
 
-void HAL_init(multiboot_info_t *multibootinfo); 
+void HAL_init(multiboot_data *multibootinfo); 
 

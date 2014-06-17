@@ -1,6 +1,6 @@
 #include <HAL/hal.h> 
 
-void HAL_init(multiboot_info_t *multibootinfo) { 
+void HAL_init(multiboot_data *multibootinfo) { 
 	UNUSED(multibootinfo); 
 	GDT_init(); 
 	interrupts_init();  
