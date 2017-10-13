@@ -21,6 +21,8 @@ SECTIONS {
 		*(.bss) 
 		*(.MainStack) 
 	} 
+	
+	_kmalloc_nfree_addr = .;
 
 } 
 

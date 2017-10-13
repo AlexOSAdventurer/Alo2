@@ -9,7 +9,7 @@
 #define PIC_READ_ISR  0x0B 
 #define PIC_DISABLECODE 0xFF
 
-#include "../../../../../../include/Utility/Utility.h"
+#include <Utility/Utility.h>
 
 uint16_t PIC_get_irq_register(int ocw3); 
 

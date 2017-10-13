@@ -83,6 +83,11 @@ void terminal_printf(const char *str, ...) {
 				itoa(va_arg(thelist, int), thebuffer, 10); 
 				terminal_putstring(thebuffer); 
 			} 
+			else if (str[i + 1] == 'h') {
+				char thebuffer[256]; 
+				itoa(va_arg(thelist, int), thebuffer, 16); 
+				terminal_putstring(thebuffer); 
+			} 
 			else if (str[i + 1] == '%') { 
 				terminal_putchar('%', terminal_currentbackground, terminal_currentforeground); 
 			}

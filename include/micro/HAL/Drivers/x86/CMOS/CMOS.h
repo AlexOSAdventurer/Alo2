@@ -2,7 +2,7 @@
 
 #include <Utility/Utility.h> 
 #include <stdint-gcc.h> 
-#include <HAL/Drivers/x86/Interrupts/interrupts.h> 
+#include <HAL/Drivers/x86/Interrupts/Interrupts.h> 
 
 
 void CMOS_Disable_NMI(void); 

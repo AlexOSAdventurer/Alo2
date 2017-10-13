@@ -2,10 +2,10 @@
 
 
 static void Interrupt_DumpExceptionStack(interrupt_stackstate thestack) { 
-	terminal_printf("GS: %d. FS: %d. ES: %d. DS: %d.", thestack.gs, thestack.fs, thestack.es, thestack.ds); 
-	terminal_printf("EDI: %d. ESI: %d. EBP: %d. ESP: %d. EBX: %d. ECX: %d. EAX: %d.  ", thestack.edi, thestack.esi, thestack.ebp, thestack.esp, thestack.ebx, thestack.ecx, thestack.eax); 
-	terminal_printf("Interrupt_number: %d. Error code: %d.", thestack.interrupt_number, thestack.errorcode); 
-	terminal_printf("EIP: %d. CS: %d. EFLAGS: %d. User's esp: %d. SS: %d.", thestack.eip, thestack.cs, thestack.eflags, thestack.useresp, thestack.ss); 
+	terminal_printf("\nGS: %h. FS: %h. ES: %h. DS: %h.", thestack.gs, thestack.fs, thestack.es, thestack.ds); 
+	terminal_printf("EDI: %h. ESI: %h. EBP: %h. ESP: %h. EBX: %h. ECX: %h. EAX: %h.  ", thestack.edi, thestack.esi, thestack.ebp, thestack.esp, thestack.ebx, thestack.ecx, thestack.eax); 
+	terminal_printf("Interrupt_number: %h. Error code: %h.", thestack.interrupt_number, thestack.errorcode); 
+	terminal_printf("EIP: %h. CS: %h. EFLAGS: %h. User's esp: %h. SS: %h.", thestack.eip, thestack.cs, thestack.eflags, thestack.useresp, thestack.ss); 
 }; 
 
 void Interrupt_Exception_Handler(interrupt_stackstate *stack) { 

@@ -3,7 +3,7 @@
 
 typedef PITCallback TimerCallback; 
 
-static struct Timer_struct { 
+struct Timer_struct { 
 	TimerCallback func; 
 	int tick; 
 	int limit; 
