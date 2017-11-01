@@ -9,6 +9,12 @@
 
 #define UNUSED(var) (void)(var) 
 
+
+
+int abs(int thenumber);
+
+int ceil_i(int n, int d);
+
 void panic(const char* msg); 
 
 void outportb(uint16_t port, uint8_t thevalue); 

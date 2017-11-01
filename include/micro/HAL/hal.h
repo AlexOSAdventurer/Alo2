@@ -9,6 +9,7 @@
 #include <HAL/Interactors/Timer/Timer.h> 
 #include <HAL/Interactors/DateAndTime/DateAndTime.h> 
 #include <Memory/kmalloc_nfree.h>
+#include <Memory/kmalloc.h>
 
 
 void HAL_init(multiboot_data *multibootinfo); 

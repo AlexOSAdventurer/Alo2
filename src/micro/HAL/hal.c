@@ -17,4 +17,5 @@ void HAL_init(multiboot_data *multibootinfo) {
 		panic("Multiboot memory not available!");
 	};
 	paging_init(max_addr);
+	kmalloc_init();
 }; 

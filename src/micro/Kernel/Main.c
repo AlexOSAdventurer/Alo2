@@ -12,5 +12,6 @@ void Alo_Main(multiboot_data *multibootdata) {
 		terminal_printf("Address: %h.", (int) multibootdata->addressoffirstmodule);
 		terminal_putstring("Contents:\n");
 		terminal_putstring(*mod + 0x200);
+		terminal_putstring("\n");
 	}
 }; 

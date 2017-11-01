@@ -20,6 +20,6 @@ inportb:
 .type inportb, @function 
 
 io_wait: 
-	outb %al, $80 
+	outb %al, $0x80 
 	ret 
 

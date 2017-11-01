@@ -15,7 +15,7 @@ all:
 
 
 emulator: $(TARGETISO) 
-	$(EM) $(TARGETISO)
+	$(EM) $(TARGETISO) -s
 
 disassemble: 
 	@$(DS) -d -Matt $(EXECUTABLE) > $(DISASSEMBLE_FILE)

@@ -1,12 +1,5 @@
 #include <Utility/Utility.h> 
 
-static int abs(int thenumber) { 
-	if (thenumber < 0) { 
-		return -thenumber; 
-	}; 
-	return thenumber; 
-}; 
-
 
 void panic(const char* msg) { 
 	terminal_printf("KERNEL PANIC: %s.", msg);  
@@ -52,3 +45,18 @@ void itoa(int num, char *thespace, int base) {
 	thespace[endcount] = '\0'; 
 }; 	
 		
+int abs(int thenumber) { 
+	if (thenumber < 0) { 
+		return -thenumber; 
+	}; 
+	return thenumber; 
+}; 
+
+int ceil_i(int n, int d) { 
+	int res = 0;
+	if (n % d) { 
+		res++;
+	}
+	res = res + (n / d);
+	return res;
+}
