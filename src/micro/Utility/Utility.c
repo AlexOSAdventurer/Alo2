@@ -13,7 +13,7 @@ void itoa(int num, char *thespace, int base) {
 	int currentnumber = abs(num); 
 	int charcount = 0; 
 	int endcount = 0; 
-	char *medium[256]; 
+	char medium[256]; 
 	const char *index = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
 	if (currentnumber == 0) { 
 		medium[charcount] = '0'; 

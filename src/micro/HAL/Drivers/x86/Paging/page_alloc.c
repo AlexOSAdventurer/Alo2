@@ -21,7 +21,6 @@ static void set_page_prim(int i, int o) {
 	page_alloc_d[i] |= (1 << o);
 };
 
-
 int test_page_prim(int i, int o) { 
 	return ((page_alloc_d[i] & (1 << o)) > 0);
 };
@@ -34,9 +33,9 @@ static void set_page(uint32_t p) {
 	set_page_prim(TABLE_INDEX(p), TABLE_OFFSET(p));
 };
 
-static int test_page(uint32_t p) { 
+/*static int test_page(uint32_t p) { 
 	return test_page_prim(TABLE_INDEX(p), TABLE_OFFSET(p));
-};
+};*/
 
 static void clear_page(uint32_t p) { 
 	clear_page_prim(TABLE_INDEX(p), TABLE_OFFSET(p));
@@ -101,11 +100,11 @@ void page_alloc_init(uint32_t max_page, uint32_t max_kern_page) {
 	terminal_printf("Max page: %h.", (int)max_page);
 	terminal_printf("Kernel dir: %h.", (uint32_t) kernel_dir);
 	page_alloc_d = (uint32_t*)kmalloc_nfree(MAX_ADDRESS_AM, 0);
-	for (int i = 0; i < (max_kern_page / 32); i++) { 
+	for (size_t i = 0; i < (max_kern_page / 32); i++) { 
 		page_alloc_d[i] = 0xFFFFFFFF;
 	};
 	
-	for (int i = (max_page / 32) - 1; i < (MAX_ADDRESS_AM  - 1); i++) { 
+	for (size_t i = (max_page / 32) - 1; i < (MAX_ADDRESS_AM  - 1); i++) { 
 		page_alloc_d[i] = 0xFFFFFFFF;
 	};
 };

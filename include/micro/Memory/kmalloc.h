@@ -5,7 +5,6 @@
 #include <stddef.h>
 
 #define KMALLOC_MIN_HEAP  4194304
-#define KMALLOC_DEF_HEAP  8388608
 #define KMALLOC_MAX_HEAP  41943040  
 #define KMALLOC_MIN_EXP   16384
 #define KMALLOC_MAX_DIFF 512

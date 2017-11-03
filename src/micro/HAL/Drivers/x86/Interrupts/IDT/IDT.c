@@ -46,7 +46,7 @@ void Interrupt_Handler(interrupt_stackstate *thestack) {
 
 void IDT_init(void) { 
 	theidtpointer.size = 2047; 
-	theidtpointer.base = &IDT; 
+	theidtpointer.base = (uint32_t)(&IDT); 
 	SetIDTEntry(0, (uint32_t)ISR_0, 0x08, 0x8E);
 	SetIDTEntry(1, (uint32_t)ISR_1, 0x08, 0x8E);
 	SetIDTEntry(2, (uint32_t)ISR_2, 0x08, 0x8E);

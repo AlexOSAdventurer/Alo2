@@ -18,7 +18,7 @@ void SetGDTEntry(int entrynumber, uint32_t base, uint32_t limit, uint8_t access,
 
 void GDT_init(void) { 
 	gdtpointer.size = 23; 
-	gdtpointer.address = &thegdt; 
+	gdtpointer.address = (uint32_t)(&thegdt); 
 	SetGDTEntry(1, 0, 0xFFFFFFFF, 0x9A, 0xCF); 
 	SetGDTEntry(0, 0, 0, 0, 0); 
 	

@@ -16,7 +16,7 @@ typedef struct {
 	uint32_t ignored	: 1;
 	uint32_t avail		: 3;
 	uint32_t addr		: 20;
-} page_dir_t __attribute__((packed));
+} __attribute__((packed)) page_dir_t;
 
 typedef struct {
 	uint32_t present	: 1;
@@ -30,7 +30,7 @@ typedef struct {
 	uint32_t global		: 1;
 	uint32_t avail		: 3;
 	uint32_t addr		: 20;
-} page_table_t __attribute__((packed));
+} __attribute__((packed)) page_table_t;
 
 #include <HAL/Drivers/x86/Paging/page_alloc.h>
 

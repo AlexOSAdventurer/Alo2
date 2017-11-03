@@ -136,7 +136,7 @@ void _contract_heap(size_t size) {
 
 void _create_heap(void) { 
 	//Creates the heap by extending it to the default heap size
-	_extend_heap(KMALLOC_DEF_HEAP);
+	_extend_heap(KMALLOC_MIN_HEAP);
 };
 
 

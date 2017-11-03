@@ -13,8 +13,8 @@ static terminal_color terminal_currentbackground = BLACK;
 
 /* Just makes the screen go black */  
 void terminal_init(void) { 
-	for (int yi = 0; yi < terminal_height; yi++) { 
-		for (int xi = 0; xi < terminal_width; xi++) { 
+	for (size_t yi = 0; yi < terminal_height; yi++) { 
+		for (size_t xi = 0; xi < terminal_width; xi++) { 
 			TextModeVGA_putentry(' ', BLACK, BLACK, xi, yi); 
 		}; 
 	}; 
@@ -73,7 +73,7 @@ void terminal_movecursor(int x, int  y) {
 void terminal_printf(const char *str, ...) { 
 	va_list thelist; 
 	va_start(thelist, str); 
-	for (int i = 0; str[i] != NULL; i++) { 
+	for (int i = 0; str[i] != '\0'; i++) { 
 		if (str[i] == '%') { 
 			if (str[i + 1] == 's') { 
 				terminal_putstring(va_arg(thelist, const char*)); 
