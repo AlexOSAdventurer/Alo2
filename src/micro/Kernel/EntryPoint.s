@@ -3,6 +3,10 @@ stack_bottom:
 .skip 32768 # 32 kilobyte stack 
 stack_top:  
 
+.section .InterruptStack, "aw", @nobits
+.skip 32768
+interrupt_stack_top:
+
 .section .text 
 .global _KernelEntry  
 .type _KernelEntry, @function 

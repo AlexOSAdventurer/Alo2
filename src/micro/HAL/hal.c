@@ -18,4 +18,6 @@ void HAL_init(multiboot_data *multibootinfo) {
 	};
 	paging_init(max_addr);
 	kmalloc_init();
+	system_lib_init();
+	task_init();
 }; 

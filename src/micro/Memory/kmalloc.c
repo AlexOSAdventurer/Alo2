@@ -1,7 +1,7 @@
 #include <Memory/kmalloc_nfree.h>
 #include <HAL/Drivers/x86/Paging/paging.h>
 #include <Memory/kmalloc.h> 
-
+#include <Utility/Utility.h>
 
 //And yes, I know that this is an utter piece of shit. 
 
@@ -33,7 +33,11 @@ uint32_t p_list[KMALLOC_MAX_HEAP / 4096];
 
 //Takes the starting address of an allocation block and returns its header
 _kmalloc_header* _kmalloc_get_header(void* ptr) { 
-	return (_kmalloc_header*)((uint32_t)ptr - sizeof(_kmalloc_header));
+	_kmalloc_header* h = (_kmalloc_header*)((uint32_t)ptr - sizeof(_kmalloc_header));
+	if (h->magic != KMALLOC_MAGIC_NUMBER) { 
+		panic("Memory header not valid! Possible corruption, or we were given a bad pointer. Either way, not good.");
+	};
+	return h;
 };
 
 //Extends the heap by just one page, and doesn't create any new heap blocks in it. 
@@ -157,6 +161,11 @@ void _merge_blocks(_kmalloc_header* start, _kmalloc_header* end) {
 
 //This splits a block into two new ones, with the original having size size 
 void _split_block(_kmalloc_header* block, size_t size) { 
+	//Make sure that whatever resulting block is properly aligned
+	if (size % KMALLOC_MIN_ALIGN) { 
+		size -= (size % KMALLOC_MIN_ALIGN); 
+		size += KMALLOC_MIN_ALIGN;
+	}
 	//Get the new allocation block's address and set it up appropriately
 	_kmalloc_header* nblock = (_kmalloc_header*)((uint32_t)block + sizeof(_kmalloc_header) + size);
 	nblock->prev = block;
@@ -169,8 +178,27 @@ void _split_block(_kmalloc_header* block, size_t size) {
 	nblock->magic = KMALLOC_MAGIC_NUMBER;
 };
 
+static uint32_t _find_align_addr(_kmalloc_header* start, _kmalloc_header* end, uint32_t size, uint32_t align) { 
+	uint32_t start_addr = (uint32_t)start;
+	uint32_t end_addr = (uint32_t)end;
+	uint32_t cur_addr = start_addr - (start_addr % align) + align;
+	while (cur_addr < end_addr) { 
+		uint32_t lsize = cur_addr - start_addr;
+		uint32_t rsize = end_addr - cur_addr + end->size;
+		if (lsize == sizeof(_kmalloc_header)) { 
+			return 1;
+		}
+		else if ((lsize > sizeof(_kmalloc_header)) && (rsize >= size)) { 
+			return cur_addr;
+		};
+		cur_addr += align;
+	};
+	return 0;
+};
+
 //Allocates a data block of at least size size and returns it
-void* kmalloc(size_t size) {
+void* _kmalloc(size_t size, uint32_t align, uint32_t* phys) {
+	uint32_t res;
 	//If no heap exists
 	if (blocks == NULL) { 
 		return NULL;
@@ -178,6 +206,7 @@ void* kmalloc(size_t size) {
 	_kmalloc_header* cur = blocks; 
 	_kmalloc_header* start = blocks; 
 	_kmalloc_header* end = blocks;
+	uint32_t align_addr;
 	uint32_t cur_size;
 	//Search for the first available FREE block
 	_kmalloc_main: 
@@ -191,7 +220,7 @@ void* kmalloc(size_t size) {
 	};
 	//See if it forms a long enough chain of memory blocks to work with. Otherwise, go back to the above loop. 
 	start = cur;
-	while (cur_size < size) { 
+	while (cur_size < (size * 2)) { 
 		cur_size += cur->size + sizeof(_kmalloc_header);
 		if (cur->next == NULL) { 
 			_extend_heap(size);
@@ -203,8 +232,28 @@ void* kmalloc(size_t size) {
 		cur = cur->next;
 	};
 	//Since we went one block too far ahead, correct for it. 
+	end = cur->prev;
+	_kmalloc_align_check:
+	align_addr = _find_align_addr(start, cur, size, align);
+	if (align_addr == 0) { 
+		if (cur->next == NULL) { 
+			_extend_heap(size);
+			goto _kmalloc_align_check;
+		}
+		else { 
+			cur = cur->next;
+			goto _kmalloc_main;
+		};
+	} 
+	else if (align_addr != 1) { 
+		uint32_t dist = align_addr - (uint32_t)start;
+		_merge_blocks(start, end);
+		_split_block(start, dist - (2 * sizeof(_kmalloc_header)));
+		start = start->next;
+		end = start;
+	};
+	
 	//If it is more than one block, merge them all.
-	end = cur->prev; 
 	if (start != end) { 
 		_merge_blocks(start, end);
 	}
@@ -215,54 +264,68 @@ void* kmalloc(size_t size) {
 	//Mark the block as used
 	start->type = USED;
 	//Return the address right after the header. 
-	return (void*)(((uint32_t)start) + sizeof(_kmalloc_header));
+	res = (((uint32_t)start) + sizeof(_kmalloc_header));
+	if (phys != NULL) { 
+		uint32_t p_n = res - _kmalloc_d_start_addr;
+		p_n = p_n / 4096;
+		p_n--;
+		p_n = p_list[p_n];
+		*phys = (p_n * 4096) + (res % 4096);
+	}
+	return (void*)res;
 } 
 
+
+void* kmalloc(size_t size) { 
+	return _kmalloc(size, KMALLOC_MIN_ALIGN, NULL);
+};
+
+void* kmalloc_a(size_t size, uint32_t align, uint32_t* phys) { 
+	return _kmalloc(size, align, phys);
+};
 
 //Frees up the block provided to it, and does any heap management and unification it needs to. 
 void  kfree(void* ptr) { 
 	//Basic initialization. 
+	//Implicit magic number check.
 	_kmalloc_header* head = _kmalloc_get_header(ptr);
 	_kmalloc_header* cur_end = blocks_end;
 	_kmalloc_header* cur_end_next;
-	//Check magic number. 
-	if (head->magic == KMALLOC_MAGIC_NUMBER) {
-		//Mark the block as free. 
-		head->type = FREE;
-		//Merge it with other free blocks 
-		while (head->size < KMALLOC_MIN_BLOCK) { 
-			_kmalloc_header* tmp;
-			_kmalloc_type prev_t = USED;
-			_kmalloc_type next_t = USED; 
-			//Merge left if possible 
-			if ((head->prev != NULL) && (head->prev->type == FREE)) { 
-				tmp = head->prev;
-				 _merge_blocks(head->prev, head);
-				head = tmp;
-				prev_t = FREE;
-			};
-			//Merge right 
-			if ((head->next != NULL) && (head->next->type == FREE)) {
-				_merge_blocks(head, head->next);
-				next_t = FREE;
-			};		
-			//If we are isolated on both sides, stop merging 
-			if ((prev_t == USED) && (next_t == USED)) { 
-				break; 
-			};
+	//Mark the block as free. 
+	head->type = FREE;
+	//Merge it with other free blocks 
+	while (head->size < KMALLOC_MIN_BLOCK) { 
+		_kmalloc_header* tmp;
+		_kmalloc_type prev_t = USED;
+		_kmalloc_type next_t = USED; 
+		//Merge left if possible 
+		if ((head->prev != NULL) && (head->prev->type == FREE)) { 
+			tmp = head->prev;
+			_merge_blocks(head->prev, head);
+			head = tmp;
+			prev_t = FREE;
 		};
-		//Lets try to contract 
-		while (((_kmalloc_d_cur_addr - _kmalloc_d_start_addr) > KMALLOC_MIN_HEAP) && (cur_end != NULL) && (cur_end->type == FREE)) {
-			cur_end_next = cur_end->prev;
-			uint32_t next_addr = (uint32_t)(cur_end_next);
-			uint32_t end_addr = (uint32_t)(cur_end);
-			
-			//Checking if we just crossed a page boundary; if so, contract
-			if ((next_addr / 4096) > (end_addr / 4096)) { 
-				_contract_heap(4096);
-			};
-			cur_end = cur_end_next; 
+		//Merge right 
+		if ((head->next != NULL) && (head->next->type == FREE)) {
+			_merge_blocks(head, head->next);
+			next_t = FREE;
+		};		
+		//If we are isolated on both sides, stop merging 
+		if ((prev_t == USED) && (next_t == USED)) { 
+			break; 
 		};
+	};
+	//Lets try to contract 
+	while (((_kmalloc_d_cur_addr - _kmalloc_d_start_addr) > KMALLOC_MIN_HEAP) && (cur_end != NULL) && (cur_end->type == FREE)) {
+		cur_end_next = cur_end->prev;
+		uint32_t next_addr = (uint32_t)(cur_end_next);
+		uint32_t end_addr = (uint32_t)(cur_end);
+		
+		//Checking if we just crossed a page boundary; if so, contract
+		if ((next_addr / 4096) > (end_addr / 4096)) { 
+			_contract_heap(4096); // It would probably be better just to use a function that contracts one page at a time.
+		};
+		cur_end = cur_end_next; 
 	};
 } 
 

@@ -1,3 +1,6 @@
+#ifndef TIMER_H
+#define TIMER_H
+
 #include <HAL/Drivers/x86/PIT/PIT.h> 
 #include <stdbool.h> 
 
@@ -19,3 +22,4 @@ void Timer_DeRegister_Timer(Timer* ourtimer);
 
 void Timer_init(void); 
 
+#endif

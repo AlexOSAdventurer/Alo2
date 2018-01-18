@@ -2,6 +2,8 @@
 #include <HAL/Interactors/Terminal/Terminal.h>
 #include <stdint-gcc.h>
 #include <HAL/Drivers/x86/Paging/paging.h>
+#include <Memory/kmalloc.h>
+#include <gcc-lib-funcs/gcc-lib-funcs.h>
 #include <stddef.h>
 
 #define TABLE_INDEX(i) (i / 32)
@@ -65,18 +67,32 @@ int _alloc_page() {
 	return res;
 };
 
-int alloc_page(uint32_t addr, page_dir_t* dir) { 
+int alloc_page_p(size_t p_n, page_dir_t* dir) { 
 	int p = _alloc_page();
 	if (p != -1) { 
-		size_t p_n = addr / 4096; 
 		size_t dir_n = p_n / 1024; 
 		p_n = p_n % 1024;
-		page_table_t* p_list = (page_table_t*)(dir[dir_n].addr << 12);
+		//Create the page table entry if it isn't there already 
+		if (dir[dir_n].present == 0) {
+			uint32_t phys;
+			page_table_t* t = kmalloc_a(sizeof(page_table_t) * 1024, 4096, &phys);
+			phys = paging_get_phys((uint32_t)t);
+			memset(t, 0, 4096);
+			dir[dir_n].addr = ((uint32_t)phys >> 12);
+			dir[dir_n].present = 1;
+			dir[dir_n].rw = 1;
+		};
+		page_table_t* p_list = (page_table_t*)(paging_get_virt(dir[dir_n].addr << 12));
 		p_list[p_n].present = 1;
 		p_list[p_n].addr = (4096 * (uint32_t)p) >> 12;
 		p_list[p_n].rw = 1;
 	}
 	return p;
+
+}
+
+int alloc_page(uint32_t addr, page_dir_t* dir) { 
+	return alloc_page_p(addr / 4096, dir);
 }
 
 

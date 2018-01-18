@@ -1,10 +1,15 @@
 #include <Utility/Utility.h> 
+#include <HAL/Drivers/x86/Interrupts/Interrupts.h>
 
+
+void hang(void) { 
+	for (;;);
+};
 
 void panic(const char* msg) { 
-	terminal_printf("KERNEL PANIC: %s.", msg);  
-	__asm__  __volatile__("cli"); /* Disable interrupts */ 
-	for (;;)    ;  
+	terminal_printf("KERNEL PANIC: %s", msg);  
+	interrupts_disable();  
+	hang();  
 }; 
 
 

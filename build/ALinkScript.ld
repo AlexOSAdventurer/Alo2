@@ -20,6 +20,7 @@ SECTIONS {
 		*(COMMON) 
 		*(.bss) 
 		*(.MainStack) 
+		*(.InterruptStack)
 	} 
 	
 	_kmalloc_nfree_addr = .;

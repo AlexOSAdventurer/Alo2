@@ -1,4 +1,4 @@
-.PHONY: all micro clean micro_clean
+.PHONY: all micro initrd clean micro_clean initrd_clean
 
 all: micro
 
@@ -9,3 +9,9 @@ micro:
 	
 micro_clean:
 	make -C micro clean
+
+initrd:
+	make -C initrd all
+
+initrd_clean:
+	make -C initrd_clean clean

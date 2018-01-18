@@ -16,11 +16,17 @@ paging_disable:
 	movl %eax, %cr0 
 	ret 
 	
-.global paging_load_dir
-.type paging_load_dir, @function 
+.global _paging_load_dir
+.type _paging_load_dir, @function 
 
-paging_load_dir: 
+_paging_load_dir: 
 	movl 4(%esp), %eax
 	movl %eax, %cr3 
 	ret
 	
+.global paging_get_dir
+.type paging_get_dir, @function 
+
+paging_get_dir:
+	movl %cr3, %eax 
+	ret

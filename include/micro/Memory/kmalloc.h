@@ -10,10 +10,12 @@
 #define KMALLOC_MAX_DIFF 512
 #define KMALLOC_MIN_BLOCK 32
 #define KMALLOC_DEF_BLOCK 1024
+#define KMALLOC_MIN_ALIGN 8
 
 #define KMALLOC_MAGIC_NUMBER 0xD6CCE35C487A58FE
 
 void* kmalloc(size_t size);
+void* kmalloc_a(size_t size, uint32_t align, uint32_t* phys);
 void  kfree(void* ptr);
 size_t kmalloc_get_size(void* ptr); 
 void  kmalloc_init(void);

@@ -35,14 +35,18 @@ typedef struct {
 #include <HAL/Drivers/x86/Paging/page_alloc.h>
 
 page_dir_t* kernel_dir;
-
+page_dir_t* paging_cur_dir;
 
 page_table_t* paging_create_table(void);
 page_dir_t* paging_create_dir(void);
 
-void paging_load_dir(page_dir_t*);
+void _paging_load_dir(uint32_t);
+void paging_load_dir(page_dir_t* d);
+page_dir_t* paging_get_dir(void);
 void paging_load_kernel_dir(uint32_t max_addr);
 
+uint32_t paging_get_phys(uint32_t addr);
+uint32_t paging_get_virt(uint32_t addr);
 
 void paging_enable(void);
 void paging_disable(void);

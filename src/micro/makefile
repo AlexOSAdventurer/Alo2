@@ -9,7 +9,6 @@ LDFLAGS= -T $(LDFILE) -ffreestanding -O2 -nostdlib -lgcc -ggdb
 
 CSOURCES := $(shell find . -name '*.c')
 ASOURCES := $(shell find . -name '*.s')
-TSOURCES := $(CSOURCES) $(ASOURCES)
 OBJECTS  := $(CSOURCES:.c=.o) $(ASOURCES:.s=.o) 
 
 EXECUTABLE = Alo2.bin
