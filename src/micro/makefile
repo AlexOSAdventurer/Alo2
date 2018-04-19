@@ -2,9 +2,9 @@ CC=i686-elf-gcc
 AS=i686-elf-as 
 RT=../..
 CINCLUDE=$(RT)/include/micro
-CFLAGS= -c -Wall -O2 -std=gnu99 -Wextra -I$(CINCLUDE) -ggdb
+CFLAGS= -c -Wall -O3 -ffreestanding -std=gnu99 -Wextra -I$(CINCLUDE) -ggdb
 LDFILE=$(RT)/build/ALinkScript.ld
-LDFLAGS= -T $(LDFILE) -ffreestanding -O2 -nostdlib -lgcc -ggdb
+LDFLAGS= -T $(LDFILE) -ffreestanding -O3  -nostdlib -lgcc -ggdb
 
 
 CSOURCES := $(shell find . -name '*.c')

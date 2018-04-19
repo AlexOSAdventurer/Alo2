@@ -76,6 +76,12 @@ int alloc_page_p(size_t p_n, page_dir_t* dir) {
 		if (dir[dir_n].present == 0) {
 			uint32_t phys;
 			page_table_t* t = kmalloc_a(sizeof(page_table_t) * 1024, 4096, &phys);
+			if ((unsigned int)t == 0xb47000) {
+				terminal_printf("TEST! \n");
+			}
+			else {
+				terminal_printf("Table address: %h, %h", (unsigned int)t, paging_get_phys((uint32_t)t));
+			}
 			phys = paging_get_phys((uint32_t)t);
 			memset(t, 0, 4096);
 			dir[dir_n].addr = ((uint32_t)phys >> 12);
@@ -119,7 +125,6 @@ void page_alloc_init(uint32_t max_page, uint32_t max_kern_page) {
 	for (size_t i = 0; i < (max_kern_page / 32); i++) { 
 		page_alloc_d[i] = 0xFFFFFFFF;
 	};
-	
 	for (size_t i = (max_page / 32) - 1; i < (MAX_ADDRESS_AM  - 1); i++) { 
 		page_alloc_d[i] = 0xFFFFFFFF;
 	};

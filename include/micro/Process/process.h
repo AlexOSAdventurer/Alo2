@@ -6,17 +6,18 @@
 #include <Task/task.h>
 #include <HAL/Drivers/x86/Paging/paging.h>
 #include <Utility/Utility.h>
+#include <Utility/LinkedList.h>
 #include <Memory/kmalloc.h>
 
 
 typedef struct Thread { 
-	struct Thread* prev;
-	struct Thread* next;
+	//struct Thread* prev;
+	//struct Thread* next;
 	task_t* t;
 } Thread_t;
 
 typedef struct { 
-	Thread_t* threads;
+	LList_t* threads;
 	page_dir_t* dir;
 	uint32_t dir_phys;
 	int pn;

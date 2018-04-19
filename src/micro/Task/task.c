@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <Utility/LinkedList.h>
 #include <gcc-lib-funcs/gcc-lib-funcs.h>
 #include <Task/task.h>
 #include <HAL/Drivers/x86/Paging/paging.h>
@@ -9,30 +10,36 @@
 
 Timer* switch_timer = NULL;
 
-task_t* task_queue = NULL;
-task_t* task_current = NULL;
+volatile LList_t* task_queue = NULL;
+volatile LList_t* task_current = NULL;
 
 static size_t m_api_number = 0;
 
-uint32_t task_lowest_pid = 0;
+static int task_search(void* item, void* data) {
+	return item == data;
+}
 
-static void copy_task_state(interrupt_stackstate* s1, interrupt_stackstate* s2) { 
-	if ((s1 != NULL) && (s2 != NULL)) { 
+static task_t* get_current_task() {
+	return (task_t*)LList_get_item((LList_t*)task_current);
+}
+
+void copy_task_state(interrupt_stackstate* s1, interrupt_stackstate* s2) {
+	if ((s1 != NULL) && (s2 != NULL)) {
 		memcpy(s2, s1, sizeof(interrupt_stackstate));
 	};
 };
 
 static void save_task_state(interrupt_stackstate* state) { 
-	if (task_current != NULL) { 
-		copy_task_state(state, task_current->state);
+	if (task_current != NULL) {
+		copy_task_state(state, get_current_task()->state);
 	}
 };
 
-static void setup_task_state(interrupt_stackstate* state) { 
-	if (task_current != NULL) { 
-		copy_task_state(task_current->state, state);
-		//terminal_printf("Addr: %h", (uint32_t)task_current->dir);
-		paging_load_dir((page_dir_t*)task_current->dir);
+void setup_task_state(interrupt_stackstate* state) {
+	if (task_current != NULL) {
+		copy_task_state(get_current_task()->state, state);
+		terminal_printf("Addr: %h", (uint32_t)get_current_task()->dir);
+		paging_load_dir((page_dir_t*)get_current_task()->dir);
 	};
 }
 
@@ -44,38 +51,18 @@ void switch_task_handler(interrupt_stackstate* state) {
 };
 
 void switch_task(void) { 
-	if (task_current != NULL)  {
-		task_current = task_current->next;
-	};
+	task_current = (volatile LList_t*)LList_get_next((LList_t*)task_current);
 }; 
 
 void add_task(task_t* t) { 
-	if (task_queue != NULL) {
-		t->prev = task_queue->prev;
-		t->next = task_queue->next;
-		t->prev->next = t;
-		t->next->prev = t;
-	}
-	else { 
-		task_current = t;
-		t->prev = t;
-		t->next = t;
-	};
-	task_queue = t;
+	LList_add_item((LList_t*)task_queue, t);
 }; 
 
-
 void remove_task(task_t* t) { 
-	if (t == task_current)  {
+	if (t == get_current_task())  {
 		switch_task();
 	};
-	if (t->prev != NULL) {
-		t->prev->next = t->next;
-	};
-	
-	if (t->next != NULL)  {
-		t->next->prev = t->prev;
-	};
+	LList_remove_item((LList_t*)task_queue, LList_search_list((LList_t*)task_queue, task_search, t));
 };
 
 task_t* create_task() { 
@@ -88,14 +75,17 @@ task_t* create_task() {
 
 static void create_root_task() { 
 	task_t* t1 = create_task();
-	//task_t* t2 = create_task();
 	t1->dir = kernel_dir;
-	//t2->dir = kernel_dir;
-	
 	add_task(t1);
 };
 
+static void create_task_queue() {
+	task_queue = LList_create_list();
+	task_current = task_queue;
+}
+
 void task_init(void) {
+	create_task_queue();
 	create_root_task();
 	system_lib_handlers[m_api_number] = switch_task_handler;
 	switch_timer = kmalloc_nfree(sizeof(Timer), 0);
@@ -104,5 +94,4 @@ void task_init(void) {
 	switch_timer->limit = 200;
 	Timer_Register_Timer(switch_timer);
 };
-
 

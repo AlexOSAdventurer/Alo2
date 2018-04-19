@@ -3,7 +3,7 @@
 
 static void Interrupt_DumpExceptionStack(interrupt_stackstate thestack) { 
 	terminal_printf("\nGS: %h. FS: %h. ES: %h. DS: %h.", thestack.gs, thestack.fs, thestack.es, thestack.ds); 
-	terminal_printf("EDI: %h. ESI: %h. EBP: %h. ESP: %h. EBX: %h. ECX: %h. EAX: %h.  ", thestack.edi, thestack.esi, thestack.ebp, thestack.esp, thestack.ebx, thestack.ecx, thestack.eax); 
+	terminal_printf("EDI: %h. ESI: %h. EBP: %h. ESP: %h. EBX: %h. ECX: %h. EAX: %h. EDX: %h.  ", thestack.edi, thestack.esi, thestack.ebp, thestack.esp, thestack.ebx, thestack.ecx, thestack.eax, thestack.edx);
 	terminal_printf("Interrupt_number: %h. Error code: %h.", thestack.interrupt_number, thestack.errorcode); 
 	terminal_printf("EIP: %h. CS: %h. EFLAGS: %h. User's esp: %h. SS: %h.", thestack.eip, thestack.cs, thestack.eflags, thestack.useresp, thestack.ss); 
 }; 

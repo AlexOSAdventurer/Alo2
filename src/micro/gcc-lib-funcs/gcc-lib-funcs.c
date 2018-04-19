@@ -2,7 +2,7 @@
 
 #include <stdint-gcc.h>
 
-int 	memcmp(const void* ptr1, const void* ptr2, size_t num) { 
+ __attribute__((optimize("-fno-tree-loop-distribute-patterns"))) int 	memcmp(const void* ptr1, const void* ptr2, size_t num) {
 	const uint8_t* ptr1_byte = (const uint8_t*)ptr1;
 	const uint8_t* ptr2_byte = (const uint8_t*)ptr2;
 	
@@ -17,17 +17,14 @@ int 	memcmp(const void* ptr1, const void* ptr2, size_t num) {
 	return 0;
 }; 
 
-void* 	memset(void* ptr, int value, size_t num) { 
-	uint8_t* ptr_byte = (uint8_t*)ptr;
+__attribute__((optimize("-fno-tree-loop-distribute-patterns"))) void* 	memset(void* ptr, int value, size_t num) {
+	unsigned char* ptr_byte = (unsigned char*)ptr;
 
-	for (size_t i = 0; i < num; i++) { 
-		ptr_byte[i] = (uint8_t)value;
-	};
-	
+	for (size_t i = 0; i < num; ptr_byte[i] = (unsigned char)value, i++);	
 	return ptr;
 }; 
 
-void* 	memcpy(void* dest, const void* src, size_t num) { 
+__attribute__((optimize("-fno-tree-loop-distribute-patterns"))) void* 	memcpy(void* dest, const void* src, size_t num) {
 	uint8_t* dest_byte = (uint8_t*)dest;
 	const uint8_t* src_byte = (const uint8_t*)src;
 	
@@ -38,7 +35,7 @@ void* 	memcpy(void* dest, const void* src, size_t num) {
 	return dest;
 }; 
 
-void* 	memmove(void* dest, const void* src, size_t num) { 
+__attribute__((optimize("-fno-tree-loop-distribute-patterns"))) void* 	memmove(void* dest, const void* src, size_t num) {
 	uint32_t dest_l = (uint32_t)dest;
 	uint32_t src_l = (uint32_t)src;
 	
