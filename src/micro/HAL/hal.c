@@ -8,6 +8,7 @@ void HAL_init(multiboot_data *multibootinfo) {
 	interrupts_init();  
 	terminal_init();
 	kmalloc_nfree_init();
+	initrd_relocate(multibootinfo);
 	Timer_init(); 
 	if (multibootinfo->flags & 1) { 
 		max_addr = max_addr + multibootinfo->highermemory;
@@ -21,4 +22,5 @@ void HAL_init(multiboot_data *multibootinfo) {
 	kmalloc_init();
 	system_lib_init();
 	task_init();
+	initrd_load(multibootinfo);
 }; 
