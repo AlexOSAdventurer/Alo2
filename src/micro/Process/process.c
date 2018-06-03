@@ -11,7 +11,7 @@ Thread_t* spawn_thread(process_t* proc, uint32_t addr) {
         Thread_t* nt = kmalloc(sizeof(Thread_t));
         memset(nt, 0, sizeof(Thread_t));
         nt->t = create_task();
-        LList_add_item(proc->threads, nt->t);
+        LList_add_item(proc->threads, nt);
         task_t* t = nt->t;
         interrupt_stackstate* st = t->state;
         st->eip = addr;
@@ -74,12 +74,12 @@ page_dir_t* create_directory_process(process_t* proc, size_t n) {
 
 void stop_process(process_t* proc) { 
         for (size_t i = 0; i < LList_get_length(proc->threads); i++) {
-        		Thread_t* ct = LList_get_item(proc->threads);
+        		Thread_t* ct = LList_get_item(proc->threads, i);
                 remove_task(ct->t);
                 kfree(ct->t);
                 kfree(ct);
-                LList_remove_item(proc->threads, proc->threads);
         };
+        LList_delete_list(proc->threads);
         free_directory_process(proc);
         kfree(proc);
 };

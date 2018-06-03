@@ -23,7 +23,7 @@ SECTIONS {
 		*(.InterruptStack)
 	} 
 	
-	_kmalloc_nfree_addr = .;
+	_kmalloc_nfree_addr = 10M;
 
 } 
 

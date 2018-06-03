@@ -2,16 +2,17 @@
 #include <Memory/kmalloc_nfree.h>
 #include <Memory/kmalloc.h>
 #include <gcc-lib-funcs/gcc-lib-funcs.h>
+#include <Utility/Utility.h>
 
 
-static int ceil_i(int n, int d) { 
+/*static int ceil_i(int n, int d) { 
 	int res = 0;
 	if (n % d) { 
 		res++;
 	}
 	res = res + (n / d);
 	return res;
-}
+}*/
 
 
 page_table_t* paging_create_table_p(void) { 
@@ -63,7 +64,6 @@ page_table_t* paging_create_kernel_table(int i, int n, int dir_entries) {
 static void paging_create_kernel_dir(uint32_t max_addr) {
 	kernel_dir = paging_create_dir_p();
 	int dir_entries = ceil_i((int)max_addr, PAGING_PAGE_DIRECTORY_SIZE);
-	
 	for (int i = 0; i < 1024; i++) { 
 		int max = 1024; 
 		if (i == (dir_entries - 1)) { 
@@ -130,3 +130,4 @@ void paging_init(uint32_t max_addr) {
 	paging_enable();
 	page_alloc_init(max_addr / PAGING_PAGE_SIZE, (uint32_t)(ceil_i(ceil_i(_kmalloc_max_addr, PAGING_PAGE_SIZE), 32) * 32));
 }
+

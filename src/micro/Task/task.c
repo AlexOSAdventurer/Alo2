@@ -1,5 +1,5 @@
 #include <stddef.h>
-#include <Utility/LinkedList.h>
+#include <Utility/CLinkedList.h>
 #include <gcc-lib-funcs/gcc-lib-funcs.h>
 #include <Task/task.h>
 #include <HAL/Drivers/x86/Paging/paging.h>
@@ -10,8 +10,7 @@
 
 Timer* switch_timer = NULL;
 
-volatile LList_t* task_queue = NULL;
-volatile LList_t* task_current = NULL;
+volatile CLList_t* task_queue = NULL;
 
 static size_t m_api_number = 0;
 
@@ -19,26 +18,26 @@ static int task_search(void* item, void* data) {
 	return item == data;
 }
 
-static task_t* get_current_task() {
-	return (task_t*)LList_get_item((LList_t*)task_current);
+volatile task_t*  __attribute__ ((noinline)) get_current_task() {
+	return (volatile task_t*)CLList_stepper_get_current((CLList_t*)task_queue);
 }
 
-void copy_task_state(interrupt_stackstate* s1, interrupt_stackstate* s2) {
+void __attribute__ ((noinline)) copy_task_state(interrupt_stackstate* s1, interrupt_stackstate* s2) {
 	if ((s1 != NULL) && (s2 != NULL)) {
 		memcpy(s2, s1, sizeof(interrupt_stackstate));
 	};
 };
 
-static void save_task_state(interrupt_stackstate* state) { 
-	if (task_current != NULL) {
+void __attribute__ ((noinline)) save_task_state(interrupt_stackstate* state) {
+	if (get_current_task() != NULL) {
 		copy_task_state(state, get_current_task()->state);
 	}
 };
 
-void setup_task_state(interrupt_stackstate* state) {
-	if (task_current != NULL) {
+void __attribute__ ((noinline)) setup_task_state(interrupt_stackstate* state) {
+	if (get_current_task() != NULL) {
 		copy_task_state(get_current_task()->state, state);
-		terminal_printf("Addr: %h", (uint32_t)get_current_task()->dir);
+		terminal_printf("Addr: %h, %h", (uint32_t)get_current_task()->dir, (uint32_t)get_current_task());
 		paging_load_dir((page_dir_t*)get_current_task()->dir);
 	};
 }
@@ -50,19 +49,22 @@ void switch_task_handler(interrupt_stackstate* state) {
 	setup_task_state(state);
 };
 
-void switch_task(void) { 
-	task_current = (volatile LList_t*)LList_get_next((LList_t*)task_current);
+void  __attribute__ ((noinline)) switch_task(void) {
+	CLList_stepper_next((CLList_t*)task_queue);
 }; 
 
 void add_task(task_t* t) { 
-	LList_add_item((LList_t*)task_queue, t);
+	CLList_add_item((CLList_t*)task_queue, t);
 }; 
 
 void remove_task(task_t* t) { 
 	if (t == get_current_task())  {
 		switch_task();
 	};
-	LList_remove_item((LList_t*)task_queue, LList_search_list((LList_t*)task_queue, task_search, t));
+	int index = (size_t)CLList_search_list((CLList_t*)task_queue, task_search, t);
+	if (index > 0) {
+		CLList_remove_item((CLList_t*)task_queue, (size_t)index);
+	};
 };
 
 task_t* create_task() { 
@@ -80,8 +82,7 @@ static void create_root_task() {
 };
 
 static void create_task_queue() {
-	task_queue = LList_create_list();
-	task_current = task_queue;
+	task_queue = CLList_create_list();
 }
 
 void task_init(void) {

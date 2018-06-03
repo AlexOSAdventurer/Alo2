@@ -15,7 +15,8 @@ all:
 
 
 emulator: $(TARGETISO) 
-	$(EM) $(TARGETISO) -s
+	$(EM) $(TARGETISO) -s & 
+	gdb $(EXECUTABLE) -ex "target remote localhost:1234"
 
 disassemble: 
 	@$(DS) -d -Matt $(EXECUTABLE) > $(DISASSEMBLE_FILE)

@@ -1,5 +1,6 @@
 #include <HAL/hal.h> 
 #include <stdint-gcc.h>
+#include <Utility/Utility.h>
 
 void HAL_init(multiboot_data *multibootinfo) { 
 	uint32_t max_addr = 1024;

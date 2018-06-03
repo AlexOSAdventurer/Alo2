@@ -15,10 +15,19 @@ typedef struct __attribute__((packed)) {
 	uint32_t shnd; 
 } elf_symbols; 
 
+typedef struct __attribute__((packed)) { 
+	uint32_t mod_start;
+	uint32_t mod_end;
+	const char* string;
+	uint32_t reserved; 
+} multiboot_modules;
+
 typedef union { 
 	aout_symbols aout; 
 	elf_symbols elf; 
 } multiboot_symbols; 
+
+
 
 
 typedef struct __attribute__((packed)) { 
@@ -28,7 +37,7 @@ typedef struct __attribute__((packed)) {
 	uint32_t thebootdevice; 
 	uint32_t commandlineargs; 
 	uint32_t numberofmodules; 
-	uint32_t addressoffirstmodule; 
+	multiboot_modules* modules; 
 	multiboot_symbols symbols; 
 	uint32_t memorymap_length; 
 	uint32_t memorymap_address; 

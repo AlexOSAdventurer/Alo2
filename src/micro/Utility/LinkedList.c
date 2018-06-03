@@ -1,117 +1,102 @@
-#include <stddef.h>
+#include <gcc-lib-funcs/gcc-lib-funcs.h>
 #include <Memory/kmalloc.h>
 #include <Utility/LinkedList.h>
-#include <gcc-lib-funcs/gcc-lib-funcs.h>
 
+static LList_item_t* LList_create_item(void* item) {
+	LList_item_t* item_container = (LList_item_t*)memset(kmalloc(sizeof(LList_item_t)), (int)NULL, sizeof(LList_item_t));
+	item_container->item = item;
+	return item_container;
+};
 
-static LList_t* LList_clear_item(LList_t* l) {
-	return memset(l, 0, sizeof(LList_t));
-}
+static LList_item_t* LList_get_container(LList_t* list, size_t index) {
+	LList_item_t* ditem = list->head;
+	for (size_t i = 0; i < index; i++, ditem = ditem->next);
+	return ditem;
+};
 
-static void LList_connect_nodes(LList_t* n, LList_t* prev, LList_t* next) {
-	n->prev = prev;
-	n->next = next;
-	if (prev != NULL) {
-		prev->next = n;
-	};
-	if (next != NULL) {
-		next->prev = n;
-	};
-}
-
-static void LList_init_root(LList_t* l) {
-	LList_connect_nodes(l, l, l);
-	l->present = 0;
-}
-
-static LList_t* LList_create_item() {
-	LList_t* res = LList_clear_item((LList_t*)kmalloc(sizeof(LList_t)));
-	res->present = 1;
-	return res;
+static LList_item_t* LList_get_container_end(LList_t* list) {
+	size_t length = list->length;
+	if (length == 0) {
+		return NULL;
+	}
+	else {
+		return LList_get_container(list, length - 1);
+	}
 }
 
 LList_t* LList_create_list() {
-	LList_t* list = LList_create_item();
-	LList_init_root(list);
-	return list;
+	return (LList_t*)memset(kmalloc(sizeof(LList_t)), (int)NULL, sizeof(LList_t));
 }
 
-void LList_delete_list(LList_t* l) {
-	for (size_t i = 0; i < LList_get_length(l); i++) {
-		LList_remove_item(l, l);
+void LList_delete_list(LList_t* list) {
+	for (size_t i = 0; i < LList_get_length(list); i++) {
+		LList_remove_item(list, 0);
 	}
+	kfree(list);
+}
+
+void LList_add_item_to_head(LList_t* list, void* i) {
+	LList_item_t* nitem = LList_create_item(i);
+	nitem->next = list->head;
+	list->head = nitem;
+	if (nitem->next != NULL) {
+		nitem->next->prev = nitem;
+	}
+	list->length = list->length + 1;
+}
+
+void LList_add_item_to_end(LList_t* list, void* i) {
+	LList_item_t* nitem = LList_create_item(i);
+	nitem->prev = LList_get_container_end(list);
+	if (nitem->prev != NULL) {
+		nitem->prev->next = nitem;
+	}
+	else {
+		list->head = nitem;
+	}
+	list->length = list->length + 1;
 }
 
 void LList_add_item(LList_t* list, void* i) {
-	LList_t* ni;
-	LList_t* next = list->next;
-	if (!list->present) {
-		ni = list;
-		ni->present = 1;
-	}
-	else {
-		ni = LList_create_item();
-	}
-	LList_connect_nodes(ni, list, next);
-	ni->item = i;
+	LList_add_item_to_head(list, i);
 }
 
-void LList_remove_item(LList_t* l, LList_t* i) {
-	if (l == i) {
-		LList_t* next = LList_get_next(l);
-		void* item1 = LList_get_item(l);
-		void* item2 = LList_get_item(next);
-		l->item = item2;
-		next->item = item1;
-	}
-	if ((i->next == i) || (i->prev == i)) {
-		LList_init_root(i);
-	}
-	else {
-		LList_connect_nodes(i->prev, i->prev->prev, i->next);
-		kfree(i);
+void LList_remove_item(LList_t* list, size_t index) {
+	LList_item_t* ditem = LList_get_container(list, index);
+	if (ditem != NULL) {
+		if (ditem == list->head) {
+			list->head = ditem->next;
+		}
+		if (ditem->next != NULL) {
+			ditem->next->prev = ditem->prev;
+		};
+		if (ditem->prev != NULL) {
+			ditem->prev->next = ditem->next;
+		};
+		kfree(ditem);
+		list->length = list->length - 1;
 	};
-}
+};
 
-LList_t* LList_get_prev(LList_t* i) {
-	return i->prev;
-}
-
-LList_t* LList_get_next(LList_t* i) {
-	return i->next;
-}
-
-void* LList_get_item(LList_t* i) {
-	return i->item;
-}
-
-LList_t* LList_get_n(LList_t* list, int l) {
-	LList_t* ce = list;
-	for (int n = 1; n < l; n++, ce = ce->next);
-	return ce;
-}
+void* LList_get_item(LList_t* list, size_t index) {
+	LList_item_t* item_container = LList_get_container(list, index);
+	if (item_container != NULL) {
+		return item_container->item;
+	};
+	return NULL;
+};
 
 size_t LList_get_length(LList_t* list) {
-	LList_t* ce = list;
-	if (!list->present) {
-		return 0;
-	}
-	else {
-		size_t n;
-		for (n = 1; ce->next != list; n++, ce = ce->next);
-		return n;
+	return list->length;
+};
+
+int LList_search_list(LList_t* list, int(*f)(void*, void*), void* data) {
+	LList_item_t* sitem = list->head;
+	for (size_t i = 0; i < LList_get_length(list); i++, sitem = sitem->next) {
+		if (f(sitem->item, data)) {
+			return i;
+		};
 	};
-}
-
-LList_t* LList_search_list(LList_t* list, int(*f)(void*, void*), void* data) {
-	LList_t* ce = list;
-	for (size_t n = 1; n <= LList_get_length(list); n++, ce = ce->next) {
-		void* item = ce->item;
-		if (f(item, data)) {
-			return ce;
-		}
-	}
-	return NULL;
-}
-
+	return -1;
+};
 

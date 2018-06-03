@@ -6,20 +6,25 @@
 #include <system-lib/system_lib.h>
  
 
+/*uint32_t get_first_part(multiboot_data *multibootdata) { 
+	return *(uint32_t*)(*((const char**)multibootdata->addressoffirstmodule) + 0x200);
+};*/
+
+
 void Alo_Main(multiboot_data *multibootdata) { 
 	HAL_init(multibootdata);  
 	terminal_putstring("Hello to Alo 2!\n"); 
 	terminal_printf("Number of modules: %d.", (int) multibootdata->numberofmodules);	
 	if (multibootdata->numberofmodules > 0) {
-		const char** mod = (const char**) multibootdata->addressoffirstmodule;
+		const char* mod = (const char*) multibootdata->modules->mod_start;
 		terminal_printf("Address: %h.", (int) mod);
 		terminal_putstring("Contents:\n");
-		terminal_putstring(*mod + 0x200);
+		terminal_putstring(mod + 0x200);
 		terminal_putstring("\n");
 		terminal_putstring("Booting initrd process....\n");
-		spawn_process((void*)(*mod + 0x200), 512);
+		spawn_process((void*)(mod + 0x200), 512);
 	}
-	int* array = kmalloc(sizeof(int) * 11);
+	/*int* array = kmalloc(sizeof(int) * 11);
 	char* str = kmalloc(sizeof(char) * 16);
 	page_dir_t* d = kmalloc_a(sizeof(page_dir_t) * 1024, 4096, NULL);
 	page_dir_t* d2 = kmalloc_a(sizeof(page_dir_t) * 1024, 4096, NULL);
@@ -35,7 +40,7 @@ void Alo_Main(multiboot_data *multibootdata) {
 	terminal_putstring("Test complete.\n");
 	kfree(array);
 	kfree(str); 
-	kfree(d);
+	kfree(d);*/
 	/*while (1) { 
 		terminal_putstring("BEFORE YIELD!\n");
 		yield();
